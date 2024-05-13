@@ -15,10 +15,13 @@ function App() {
     const data = await response.json();
 
     setMovies(data.Search);
+
+    if (searchKeyword === 'cassiel')
+      console.log("Hello there Nic Cache")
   }
 
   useEffect(() => {
-    searchMovies('spiderman');
+    searchMovies('movie');
   }, []);
 
   return (
@@ -39,19 +42,17 @@ function App() {
       </div>
 
       {movies && movies.length > 0
-            ? (
-              <div className='container'>
-                {
-                  movies.map((movie) => (
-                    <MovieCard movie={movie}/>
-                  ))
-                }
-              </div>
-            ) : (
-              <div className='empty'>
-                <h2>No movies found</h2>
-              </div>
-            )}
+        ? (
+          <div className='container'>
+            {movies.map((movie) => (
+                <MovieCard movie={movie}/>
+              ))}
+          </div>
+          ) : (
+            <div className='empty'>
+              <h2>No movies found</h2>
+            </div>
+          )}
     </div>
   );
 }

@@ -1,4 +1,25 @@
-# Getting Started with Create React App
+# Movie.Explore()
+
+### Installing dependencies on Ubuntu
+    sudo apt update
+    sudo apt install npm
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+    source ~/.bashrc
+    nvm list-remote
+    nvm install v22.1.0
+    nvm use v22.1.0
+
+### Installing dependencies on MacOS
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.3/install.sh | bash
+    nvm list-remote
+    nvm install v22.1.0
+    nvm use v22.1.0
+
+
+### Starting the react app
+   npm start
+
+# Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -39,6 +60,7 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
+<!--
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
@@ -68,25 +90,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-
-# movie_dot_explore
-<!-- 
-
-sudo apt update
-sudo apt install npm
-
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-source ~/.bashrc
-nvm list-remote
-nvm install v22.1.0
-nvm use v22.1.0
- -->
-
-<!-- 
-npx create-react-app ./
- -->
-
- <!-- 
- npm start
-  -->
+-->

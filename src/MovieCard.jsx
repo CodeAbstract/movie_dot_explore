@@ -4,7 +4,7 @@ const DEFAULT_POSTER = 'https://via.placeholder.com/400'
 
 const MovieCard = ({movie}) => {
   return (
-    <div className='movie'>
+    <div className='movie' key={movie.id}>
       <div>
         <p>{movie.name}</p>
       </div>  
