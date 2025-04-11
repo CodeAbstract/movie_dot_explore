@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Transparent background -->
+  <rect width="500" height="300" fill="none" />
+  
+  <!-- Film Reels - Repositioned higher -->
+  <circle cx="180" cy="80" r="40" fill="white" stroke="#333333" stroke-width="2" />
+  <circle cx="250" cy="80" r="40" fill="white" stroke="#333333" stroke-width="2" />
+  
+  <!-- Film Reel Holes - First reel -->
+  <circle cx="160" cy="60" r="8" fill="#333333" />
+  <circle cx="180" cy="60" r="8" fill="#333333" />
+  <circle cx="200" cy="60" r="8" fill="#333333" />
+  <circle cx="160" cy="80" r="8" fill="#333333" />
+  <circle cx="180" cy="80" r="8" fill="#333333" />
+  <circle cx="200" cy="80" r="8" fill="#333333" />
+  <circle cx="160" cy="100" r="8" fill="#333333" />
+  <circle cx="180" cy="100" r="8" fill="#333333" />
+  <circle cx="200" cy="100" r="8" fill="#333333" />
+  
+  <!-- Film Reel Holes - Second reel -->
+  <circle cx="230" cy="60" r="8" fill="#333333" />
+  <circle cx="250" cy="60" r="8" fill="#333333" />
+  <circle cx="270" cy="60" r="8" fill="#333333" />
+  <circle cx="230" cy="80" r="8" fill="#333333" />
+  <circle cx="250" cy="80" r="8" fill="#333333" />
+  <circle cx="270" cy="80" r="8" fill="#333333" />
+  <circle cx="230" cy="100" r="8" fill="#333333" />
+  <circle cx="250" cy="100" r="8" fill="#333333" />
+  <circle cx="270" cy="100" r="8" fill="#333333" />
+  
+  <!-- Camera/Projector below film reels -->
+  <rect x="195" y="130" width="50" height="40" rx="5" fill="#FF9B54" stroke="#FF7F2A" stroke-width="2" />
+  <polygon points="245,150 245,130 275,115 275,165" fill="#FF9B54" stroke="#FF7F2A" stroke-width="2" />
+  
+  <!-- Camera lens -->
+  <circle cx="220" cy="150" r="15" fill="#FFB380" stroke="#FF7F2A" stroke-width="2" />
+  <circle cx="220" cy="150" r="8" fill="#333333" />
+  
+  <!-- Square Accent -->
+  <rect x="145" y="140" width="20" height="20" fill="#FF9B54" stroke="#FF7F2A" stroke-width="2" />
+  
+  <!-- Subtle film strip connecting elements -->
+  <rect x="170" y="110" width="90" height="15" fill="#333333" opacity="0.3" rx="3" />
+  
+  <!-- Logo Text with gradient -->
+  <defs>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFFFFF" />
+      <stop offset="100%" style="stop-color:#F0F0F0" />
+    </linearGradient>
+  </defs>
+  
+  <text x="250" y="210" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="url(#textGradient)" style="letter-spacing: 2px; text-shadow: 0px 2px 3px rgba(0,0,0,0.3);">REEL•RADAR</text>
+  
+  <!-- Tagline with subtle gradient -->
+  <text x="250" y="240" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#F0F0F0" style="letter-spacing: 5px; text-shadow: 0px 1px 2px rgba(0,0,0,0.2);">UNCOVER FILMS EFFORTLESSLY</text>
+  
+  <!-- Subtle radar pulse effect -->
+  <circle cx="250" cy="115" r="65" fill="none" stroke="#FF9B54" stroke-width="1" opacity="0.15" />
+  <circle cx="250" cy="115" r="80" fill="none" stroke="#FF9B54" stroke-width="1" opacity="0.1" />
+  <circle cx="250" cy="115" r="95" fill="none" stroke="#FF9B54" stroke-width="1" opacity="0.05" />
+</svg> 
