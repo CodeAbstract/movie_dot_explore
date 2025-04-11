@@ -12,9 +12,9 @@ const TMDB_API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 const TMDB_IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
 const TOP_MOVIE_OPTIONS = [
-  { id: 'week10', count: 10, time: 'week', label: 'Top 10 Weekly' },
-  { id: 'month25', count: 25, time: 'month', label: 'Top 25 Monthly' },
-  { id: 'year50', count: 50, time: 'year', label: 'Top 50 Annually' }
+  { id: 'featured', count: 1, time: 'day', label: 'Featured Movie' },
+  { id: 'week5', count: 5, time: 'week', label: 'Weekly Top 5' },
+  { id: 'month20', count: 20, time: 'week', label: 'Monthly Top 20' }
 ];
 
 function App() {
@@ -24,19 +24,26 @@ function App() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [viewMode, setViewMode] = useState('week10');
-  const [topCount, setTopCount] = useState(10);
+  const [viewMode, setViewMode] = useState('featured');
+  const [topCount, setTopCount] = useState(5);
   const [timeWindow, setTimeWindow] = useState('week');
+  const [featuredMovie, setFeaturedMovie] = useState(null);
+  const [featuredLoading, setFeaturedLoading] = useState(true);
 
   useEffect(() => {
     // Set initial theme based on user preference
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     setIsDarkMode(prefersDark);
     document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    
+    // Set initial view to featured movie
+    setViewMode('featured');
+    // Fetch featured movie on initial load
+    fetchFeaturedMovie();
   }, []);
 
   useEffect(() => {
-    if (viewMode.startsWith('week') || viewMode.startsWith('month') || viewMode.startsWith('year')) {
+    if (viewMode === 'week5' || viewMode === 'month20') {
       fetchTopMovies();
     }
   }, [viewMode, topCount, timeWindow]);
@@ -49,10 +56,13 @@ function App() {
   const fetchTopMovies = async () => {
     setLoading(true);
     try {
+      console.log('Fetching movies with:', { timeWindow, topCount });
+      // TMDB trending only supports 'day' or 'week' time windows
       const response = await fetch(
-        `${TMDB_API_URL}/trending/movie/${timeWindow}?api_key=${TMDB_API_KEY}&language=en-US`
+        `${TMDB_API_URL}/trending/movie/week?api_key=${TMDB_API_KEY}&language=en-US`
       );
       const data = await response.json();
+      console.log('API Response:', { status: response.status, results: data.results?.length });
       
       if (data.results) {
         const moviesWithDetails = data.results.slice(0, topCount).map(movie => ({
@@ -65,13 +75,48 @@ function App() {
           Plot: movie.overview,
           tmdbId: movie.id
         }));
+        console.log('Processed movies:', moviesWithDetails.length);
         setMovies(moviesWithDetails);
+      } else {
+        console.error('No results in API response:', data);
+        setMovies([]);
       }
     } catch (error) {
       console.error('Error fetching top movies:', error);
       setMovies([]);
     }
     setLoading(false);
+  };
+
+  const fetchFeaturedMovie = async () => {
+    setFeaturedLoading(true);
+    try {
+      const response = await fetch(
+        `${TMDB_API_URL}/trending/movie/day?api_key=${TMDB_API_KEY}&language=en-US`
+      );
+      const data = await response.json();
+      
+      if (data.results && data.results.length > 0) {
+        // Get a random movie from today's top 20
+        const randomIndex = Math.floor(Math.random() * Math.min(data.results.length, 10));
+        const movie = data.results[randomIndex];
+        
+        setFeaturedMovie({
+          Title: movie.title,
+          Year: new Date(movie.release_date).getFullYear().toString(),
+          Poster: movie.poster_path ? `${TMDB_IMG_URL}${movie.poster_path}` : 'N/A',
+          BackdropPath: movie.backdrop_path ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}` : null,
+          Type: 'movie',
+          imdbRating: (movie.vote_average / 2).toFixed(1),
+          Genre: movie.genre_ids.slice(0, 3).join(', '),
+          Plot: movie.overview,
+          tmdbId: movie.id
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching featured movie:', error);
+    }
+    setFeaturedLoading(false);
   };
 
   const searchMovies = async (title) => {
@@ -171,6 +216,34 @@ function App() {
         </div>
       </div>
 
+      {viewMode === 'featured' && featuredMovie && !featuredLoading && (
+        <div className="featured-page">
+          <div 
+            className="featured-movie" 
+            onClick={() => handleMovieClick(featuredMovie)}
+            style={{
+              backgroundImage: featuredMovie.BackdropPath ? 
+                `url(${featuredMovie.BackdropPath})` : 'none'
+            }}
+          >
+            <div className="featured-content">
+              <div className="featured-info">
+                <h2>{featuredMovie.Title}</h2>
+                <p className="featured-plot">{featuredMovie.Plot}</p>
+                <div className="featured-meta">
+                  <span className="featured-year">{featuredMovie.Year}</span>
+                  <span className="featured-rating">★ {featuredMovie.imdbRating}/5</span>
+                </div>
+                <button className="featured-button">View Details</button>
+              </div>
+              <div className="featured-poster">
+                <img src={featuredMovie.Poster} alt={featuredMovie.Title} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {viewMode === 'search' && (
         <form className='search' onSubmit={handleSearch}>
           <input
@@ -192,7 +265,7 @@ function App() {
           <div className='loading-spinner'></div>
           <p>{getLoadingText()}</p>
         </div>
-      ) : movies && movies.length > 0 ? (
+      ) : movies && movies.length > 0 && viewMode !== 'featured' ? (
         <div className='container'>
           {movies.map((movie, index) => (
             <MovieCard 
@@ -203,7 +276,7 @@ function App() {
             />
           ))}
         </div>
-      ) : (
+      ) : !loading && viewMode !== 'featured' && (
         <div className='empty'>
           <h2>No movies found</h2>
         </div>
