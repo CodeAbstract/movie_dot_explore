@@ -1,5 +1,22 @@
 # Movie.Explore()
 
+## Environment Setup
+
+1. Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+
+2. Update the `.env` file with your API keys:
+- Get a TMDB API key from [The Movie Database](https://www.themoviedb.org/documentation/api)
+- Get an OMDB API key from [OMDb API](http://www.omdbapi.com/apikey.aspx)
+
+3. Add your API keys to the `.env` file:
+```
+REACT_APP_TMDB_API_KEY=your_tmdb_api_key_here
+REACT_APP_OMDB_API_KEY=your_omdb_api_key_here
+```
+
 ### Installing dependencies on Ubuntu
     sudo apt update
     sudo apt install npm

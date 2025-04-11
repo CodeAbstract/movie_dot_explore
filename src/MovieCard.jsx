@@ -15,13 +15,16 @@ const MovieCard = ({movie, onClick, rank}) => {
     setImageLoaded(true);
     setTimeout(() => {
       setIsLoading(false);
-    }, rank ? rank * 200 : 0); // Stagger the reveal based on rank
+    }, rank ? rank * 400 : 0); // Increased delay from 200ms to 400ms per rank
   };
 
   return (
     <div 
       className={`movie animate-item ${!isLoading ? 'reveal' : ''}`} 
-      style={{ animationDelay: `${rank * 0.2}s` }}
+      style={{ 
+        animationDelay: `${rank * 0.4}s`,  // Increased from 0.2s to 0.4s
+        transitionDelay: `${rank * 0.4}s`   // Added transition delay
+      }}
       onClick={!isLoading ? onClick : undefined}
     >
       {rank && (
@@ -34,7 +37,10 @@ const MovieCard = ({movie, onClick, rank}) => {
           src={movie.Poster !== 'N/A' ? movie.Poster : DEFAULT_POSTER + '?text=' + movie.Title}
           alt={movie.Title}
           onLoad={handleImageLoad}
-          style={{ opacity: imageLoaded ? 1 : 0 }}
+          style={{ 
+            opacity: imageLoaded ? 1 : 0,
+            transition: 'opacity 0.6s ease'  // Increased from default
+          }}
         />
         {isLoading && (
           <div className="movie-loading">
