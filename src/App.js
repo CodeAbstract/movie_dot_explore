@@ -20,7 +20,7 @@ const TOP_MOVIE_OPTIONS = [
 function App() {
   const [movies, setMovies] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -193,7 +193,6 @@ function App() {
   return (
     <div className={`app ${isDarkMode ? 'dark-theme' : 'light-theme'}`} data-testid="app">
       <header>
-        <h1>Reel . Radar</h1>
         <button
           onClick={toggleTheme}
           className="theme-toggle"
@@ -228,7 +227,7 @@ function App() {
         </div>
       </div>
 
-      {viewMode === 'featured' && featuredMovies.length > 0 && !featuredLoading && (
+      {viewMode === 'featured' && (
         <div className="featured-page">
           <div className="featured-carousel">
             {featuredMovies.map((movie, index) => (
@@ -262,30 +261,34 @@ function App() {
                 </div>
               </div>
             ))}
-            <button 
-              className="carousel-button prev" 
-              onClick={handlePrevFeatured}
-              aria-label="Previous movie"
-            >
-              ‹
-            </button>
-            <button 
-              className="carousel-button next" 
-              onClick={handleNextFeatured}
-              aria-label="Next movie"
-            >
-              ›
-            </button>
-            <div className="carousel-dots">
-              {featuredMovies.map((_, index) => (
-                <button
-                  key={index}
-                  className={`carousel-dot ${index === currentFeaturedIndex ? 'active' : ''}`}
-                  onClick={() => setCurrentFeaturedIndex(index)}
-                  aria-label={`Go to movie ${index + 1}`}
-                />
-              ))}
-            </div>
+            {featuredMovies.length > 0 && (
+              <>
+                <button 
+                  className="carousel-button prev" 
+                  onClick={handlePrevFeatured}
+                  aria-label="Previous movie"
+                >
+                  ‹
+                </button>
+                <button 
+                  className="carousel-button next" 
+                  onClick={handleNextFeatured}
+                  aria-label="Next movie"
+                >
+                  ›
+                </button>
+                <div className="carousel-dots">
+                  {featuredMovies.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`carousel-dot ${index === currentFeaturedIndex ? 'active' : ''}`}
+                      onClick={() => setCurrentFeaturedIndex(index)}
+                      aria-label={`Go to movie ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -306,7 +309,7 @@ function App() {
         </form>
       )}
 
-      {loading ? (
+      {loading && viewMode !== 'featured' ? (
         <div className='loading' data-testid="loading">
           <div className='loading-spinner'></div>
           <p>{getLoadingText()}</p>
