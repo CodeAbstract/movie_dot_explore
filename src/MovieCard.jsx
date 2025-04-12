@@ -85,7 +85,7 @@ const MovieCard = ({movie, onClick, rank}) => {
 
         <div className='movie-actions'>
           <button className='watch-button'>
-            Watch Trailer
+            View Details
           </button>
         </div>
       </div>
