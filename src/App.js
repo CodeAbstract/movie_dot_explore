@@ -27,8 +27,9 @@ function App() {
   const [viewMode, setViewMode] = useState('featured');
   const [topCount, setTopCount] = useState(5);
   const [timeWindow, setTimeWindow] = useState('week');
-  const [featuredMovie, setFeaturedMovie] = useState(null);
+  const [featuredMovies, setFeaturedMovies] = useState([]);
   const [featuredLoading, setFeaturedLoading] = useState(true);
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
 
   useEffect(() => {
     // Set initial theme based on user preference
@@ -36,10 +37,15 @@ function App() {
     setIsDarkMode(prefersDark);
     document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
     
-    // Set initial view to featured movie
-    setViewMode('featured');
-    // Fetch featured movie on initial load
-    fetchFeaturedMovie();
+    // Fetch featured movies on initial load
+    fetchFeaturedMovies();
+
+    // Set up auto-rotation for carousel
+    const interval = setInterval(() => {
+      setCurrentFeaturedIndex(current => (current + 1) % 3);
+    }, 8000); // Rotate every 8 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -88,7 +94,7 @@ function App() {
     setLoading(false);
   };
 
-  const fetchFeaturedMovie = async () => {
+  const fetchFeaturedMovies = async () => {
     setFeaturedLoading(true);
     try {
       const response = await fetch(
@@ -97,11 +103,8 @@ function App() {
       const data = await response.json();
       
       if (data.results && data.results.length > 0) {
-        // Get a random movie from today's top 20
-        const randomIndex = Math.floor(Math.random() * Math.min(data.results.length, 10));
-        const movie = data.results[randomIndex];
-        
-        setFeaturedMovie({
+        // Get top 3 trending movies
+        const topThreeMovies = data.results.slice(0, 3).map(movie => ({
           Title: movie.title,
           Year: new Date(movie.release_date).getFullYear().toString(),
           Poster: movie.poster_path ? `${TMDB_IMG_URL}${movie.poster_path}` : 'N/A',
@@ -111,10 +114,12 @@ function App() {
           Genre: movie.genre_ids.slice(0, 3).join(', '),
           Plot: movie.overview,
           tmdbId: movie.id
-        });
+        }));
+        
+        setFeaturedMovies(topThreeMovies);
       }
     } catch (error) {
-      console.error('Error fetching featured movie:', error);
+      console.error('Error fetching featured movies:', error);
     }
     setFeaturedLoading(false);
   };
@@ -177,19 +182,26 @@ function App() {
     return `Loading ${option?.label || 'movies'}...`;
   };
 
+  const handlePrevFeatured = () => {
+    setCurrentFeaturedIndex(current => (current - 1 + 3) % 3);
+  };
+
+  const handleNextFeatured = () => {
+    setCurrentFeaturedIndex(current => (current + 1) % 3);
+  };
+
   return (
-    <div className='app'>
-      <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-        {isDarkMode ? (
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-          </svg>
-        )}
-      </button>
+    <div className={`app ${isDarkMode ? 'dark-theme' : 'light-theme'}`} data-testid="app">
+      <header>
+        <h1>Reel . Radar</h1>
+        <button
+          onClick={toggleTheme}
+          className="theme-toggle"
+          data-testid="theme-toggle"
+        >
+          {isDarkMode ? '🌙' : '☀️'}
+        </button>
+      </header>
 
       <div className="app-header">
         <img src={logo} alt="Reel Radar" className="app-logo" />
@@ -216,29 +228,63 @@ function App() {
         </div>
       </div>
 
-      {viewMode === 'featured' && featuredMovie && !featuredLoading && (
+      {viewMode === 'featured' && featuredMovies.length > 0 && !featuredLoading && (
         <div className="featured-page">
-          <div 
-            className="featured-movie" 
-            onClick={() => handleMovieClick(featuredMovie)}
-            style={{
-              backgroundImage: featuredMovie.BackdropPath ? 
-                `url(${featuredMovie.BackdropPath})` : 'none'
-            }}
-          >
-            <div className="featured-content">
-              <div className="featured-info">
-                <h2>{featuredMovie.Title}</h2>
-                <p className="featured-plot">{featuredMovie.Plot}</p>
-                <div className="featured-meta">
-                  <span className="featured-year">{featuredMovie.Year}</span>
-                  <span className="featured-rating">★ {featuredMovie.imdbRating}/5</span>
+          <div className="featured-carousel">
+            {featuredMovies.map((movie, index) => (
+              <div 
+                key={movie.tmdbId}
+                className={`featured-movie ${index === currentFeaturedIndex ? 'active' : ''}`}
+                style={{
+                  backgroundImage: movie.BackdropPath ? 
+                    `url(${movie.BackdropPath})` : 'none',
+                  transform: `translateX(${(index - currentFeaturedIndex) * 100}%)`
+                }}
+              >
+                <div className="featured-content">
+                  <div className="featured-info">
+                    <h2>{movie.Title}</h2>
+                    <p className="featured-plot">{movie.Plot}</p>
+                    <div className="featured-meta">
+                      <span className="featured-year">{movie.Year}</span>
+                      <span className="featured-rating">★ {movie.imdbRating}/5</span>
+                    </div>
+                    <button 
+                      className="featured-button"
+                      onClick={() => handleMovieClick(movie)}
+                    >
+                      View Details
+                    </button>
+                  </div>
+                  <div className="featured-poster">
+                    <img src={movie.Poster} alt={movie.Title} />
+                  </div>
                 </div>
-                <button className="featured-button">View Details</button>
               </div>
-              <div className="featured-poster">
-                <img src={featuredMovie.Poster} alt={featuredMovie.Title} />
-              </div>
+            ))}
+            <button 
+              className="carousel-button prev" 
+              onClick={handlePrevFeatured}
+              aria-label="Previous movie"
+            >
+              ‹
+            </button>
+            <button 
+              className="carousel-button next" 
+              onClick={handleNextFeatured}
+              aria-label="Next movie"
+            >
+              ›
+            </button>
+            <div className="carousel-dots">
+              {featuredMovies.map((_, index) => (
+                <button
+                  key={index}
+                  className={`carousel-dot ${index === currentFeaturedIndex ? 'active' : ''}`}
+                  onClick={() => setCurrentFeaturedIndex(index)}
+                  aria-label={`Go to movie ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -261,7 +307,7 @@ function App() {
       )}
 
       {loading ? (
-        <div className='loading'>
+        <div className='loading' data-testid="loading">
           <div className='loading-spinner'></div>
           <p>{getLoadingText()}</p>
         </div>
