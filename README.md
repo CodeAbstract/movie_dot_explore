@@ -1,4 +1,59 @@
-# Movie.Explore()
+# Reel . Radar
+
+## Tech Stack
+
+- **Frontend Framework**: React.js
+- **Styling**: CSS3 with custom animations and transitions
+- **APIs**:
+  - TMDB (The Movie Database) API for movie data
+  - OMDB (Open Movie Database) API for additional movie details
+- **State Management**: React Hooks (useState, useEffect)
+- **Build Tools**: Node.js, npm
+- **Version Control**: Git
+- **Development Environment**: Node.js v22.1.0
+- **Key Features**:
+  - Responsive Design
+  - Dark/Light Theme
+  - Dynamic Movie Carousel
+  - Real-time Search
+  - Movie Details Modal
+  - Smooth Animations
+  - Cross-browser Compatibility
+
+## Testing
+
+The project includes comprehensive unit and integration tests using:
+- Jest (Test Runner)
+- React Testing Library (Component Testing)
+- MSW (API Mocking)
+
+### Running Tests
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests with coverage report
+npm test -- --coverage
+```
+
+### Test Structure
+- `src/__tests__/` - Contains all test files
+- `src/mocks/` - Contains API mocking setup
+  - `handlers.js` - API endpoint mocks
+  - `server.js` - MSW server setup
+
+### Test Coverage
+Tests cover:
+- Component rendering
+- User interactions
+- API integration
+- Theme switching
+- Movie filtering
+- Error handling
+- Loading states
 
 ## Environment Setup
 
